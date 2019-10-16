@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 
 public class MainFrame extends JFrame{
 	private static final int WIDTH = 600;  
-	private static final int HEIGHT = 400;
+	private static final int HEIGHT = 600;
 	private ButtonGroup radioButtons = new ButtonGroup();
 	private Box hboxFormulaType = Box.createHorizontalBox();
 	private JTextField textFieldX;  
@@ -30,18 +30,26 @@ public class MainFrame extends JFrame{
 	private JTextField textFieldZ; 
 	private JTextField textFieldResult; 
 	private int formulaId = 1;
+	private double mem1;
+	private double mem2;
+	private double mem3;
+	private short current_mem = 1;
 	private void addRadioButton(String buttonName, final int formulaId){   
 		JRadioButton button = new JRadioButton(buttonName);
 		button.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ev){
-				MainFrame.this.formulaId = formulaId;     
-				//imagePane.updateUI();
+				MainFrame.this.formulaId = formulaId;
+				drawImage("f"+formulaId+".PNG");
 			}
 		});
 		radioButtons.add(button);   
 		hboxFormulaType.add(button); 
 	}
-	private JLabel imagef;
+	public void drawImage(String url){
+		Image icon = new ImageIcon(url).getImage();
+		Graphics pict = getGraphics();
+		pict.drawImage(icon, 0, 20, WIDTH, 100, null);
+	}
 	public Double calculate1(Double x, Double y, Double z) {   
 		return Math.sin(Math.log(y)+Math.sin(Math.PI*y*y)*Math.pow(x*x+Math.sin(z)+Math.exp(Math.cos(z)),0.25));  
 	} 
@@ -136,15 +144,58 @@ public class MainFrame extends JFrame{
 		hboxButtons.add(Box.createHorizontalGlue()); 
 		hboxButtons.setBorder(BorderFactory.createLineBorder(Color.GREEN)); 
 		///
+		Box hboxmemory = Box.createHorizontalBox();
+		JButton MC = new JButton("MC");
+		MC.addActionListener(new ActionListener(){  
+			public void actionPerformed(ActionEvent ev){
+				if(current_mem == 1){
+					mem1 = 0;
+				}
+				if(current_mem == 2){
+					mem2 = 0;
+				}
+				if(current_mem == 3){
+					mem3 = 0;
+				}
+			}
+		});
+		JButton M = new JButton("M");
+		M.addActionListener(new ActionListener(){  
+			public void actionPerformed(ActionEvent ev){
+				if(current_mem == 1){
+					mem1 += Double.parseDouble(textFieldResult.getText());
+				}
+				if(current_mem == 2){
+					mem2 += Double.parseDouble(textFieldResult.getText());
+				}
+				if(current_mem == 3){
+					mem3 += Double.parseDouble(textFieldResult.getText());
+				}
+				System.out.println(mem1);
+			}
+		});
+		hboxmemory.add(MC);
+		hboxmemory.add(M);
+		//
+		/*ImageIcon icon = new ImageIcon(icon_name);
+		JLabel figure = new JLabel(icon);
+		Box hboxfigure = Box.createHorizontalBox();
+		hboxfigure.add(Box.createHorizontalGlue());
+		hboxfigure.add(figure);
+		hboxfigure.add(Box.createHorizontalGlue());*/
+		//
 		Box contentBox = Box.createVerticalBox();
+		//contentBox.add(hboxfigure);
 		contentBox.add(Box.createVerticalGlue());
 		contentBox.add(hboxFormulaType);
 		contentBox.add(hboxVariables);
 		contentBox.add(hboxResult);
 		contentBox.add(hboxButtons);
+		contentBox.add(hboxmemory);
 		contentBox.add(Box.createVerticalGlue());
 		////
 		getContentPane().add(contentBox, BorderLayout.CENTER);
+		
 		////
 	}
 	private static String getResource(String string) {
@@ -152,7 +203,7 @@ public class MainFrame extends JFrame{
 		return null;
 	}
 	public static void main(String[] args){
-		MainFrame frame = new MainFrame();   
+		MainFrame frame = new MainFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
 		frame.setVisible(true);
 		//System.out.println("finish");

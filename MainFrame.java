@@ -36,7 +36,12 @@ public class MainFrame extends JFrame{
 	private double mem1;
 	private double mem2;
 	private double mem3;
-	private short current_mem = 1;
+	private int current_mem = 1;
+	private JTextField textField_mem1;  
+	private JTextField textField_mem2; 
+	private JTextField textField_mem3; 
+	private ButtonGroup radioButtons_mem = new ButtonGroup();
+	private Box r_buttons_memory_box = Box.createHorizontalBox();
 	private void addRadioButton(String buttonName, final int formulaId){   
 		JRadioButton button = new JRadioButton(buttonName);
 		button.addActionListener(new ActionListener(){
@@ -53,6 +58,16 @@ public class MainFrame extends JFrame{
 		radioButtons.add(button);   
 		hboxFormulaType.add(button); 
 	}
+	private void addMemoryRadioButton(String buttonName, final int button_num){
+		JRadioButton button = new JRadioButton(buttonName);
+		button.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ev){
+				MainFrame.this.current_mem = button_num;
+			}
+		});
+		radioButtons_mem.add(button);
+		r_buttons_memory_box.add(button);
+	}
 	public void drawImage(String url){
 		Image icon = new ImageIcon(url).getImage();
 		Graphics pict = getGraphics();
@@ -64,7 +79,15 @@ public class MainFrame extends JFrame{
 	public Double calculate2(Double x, Double y, Double z) {   
 		return Math.pow(Math.cos(Math.pow(Math.E, x))+Math.log(Math.pow(1+y, 2))+Math.sqrt(Math.exp(Math.cos(x))+Math.pow(Math.sin(Math.PI*z), 2))+Math.sqrt(1/x)+Math.cos(y*y), Math.sin(z));  
 	}  
-	 
+	
+	public void update_mem_fields(){
+		Double m1 = mem1;
+		Double m2 = mem2;
+		Double m3 = mem3;
+		textField_mem1.setText(m1.toString());
+		textField_mem2.setText(m2.toString());
+		textField_mem3.setText(m3.toString());
+	}
 	public MainFrame(){
 		super("Вычисление");
 		setSize(WIDTH, HEIGHT);  
@@ -165,13 +188,15 @@ public class MainFrame extends JFrame{
 				if(current_mem == 3){
 					mem3 = 0;
 				}
+				update_mem_fields();
 			}
 		});
-		JButton M = new JButton("M");
+		JButton M = new JButton("M+");
 		M.addActionListener(new ActionListener(){  
 			public void actionPerformed(ActionEvent ev){
 				if(current_mem == 1){
 					mem1 += Double.parseDouble(textFieldResult.getText());
+					
 				}
 				if(current_mem == 2){
 					mem2 += Double.parseDouble(textFieldResult.getText());
@@ -179,18 +204,39 @@ public class MainFrame extends JFrame{
 				if(current_mem == 3){
 					mem3 += Double.parseDouble(textFieldResult.getText());
 				}
-				System.out.println(mem1);
+				update_mem_fields();
 			}
 		});
 		hboxmemory.add(MC);
 		hboxmemory.add(M);
 		//
-		//ImageIcon icon = new ImageIcon(icon_name);
 		figure = new JLabel(icon1);
 		Box hboxfigure = Box.createHorizontalBox();
 		hboxfigure.add(Box.createHorizontalGlue());
 		hboxfigure.add(figure);
 		hboxfigure.add(Box.createHorizontalGlue());
+		//
+		Box memory_box = Box.createHorizontalBox();
+		JLabel memory_label = new JLabel("Memory:");
+		textField_mem1 = new JTextField("0", 10);
+		textField_mem2 = new JTextField("0", 10);
+		textField_mem3 = new JTextField("0", 10);
+		textField_mem1.setMaximumSize(textField_mem1.getPreferredSize());  
+		textField_mem2.setMaximumSize(textField_mem2.getPreferredSize());  
+		textField_mem3.setMaximumSize(textField_mem3.getPreferredSize());  
+		memory_box.add(Box.createHorizontalGlue());
+		memory_box.add(memory_label);
+		memory_box.add(textField_mem1);
+		memory_box.add(textField_mem2);
+		memory_box.add(textField_mem3);
+		memory_box.add(Box.createHorizontalGlue());
+		//
+		addMemoryRadioButton("M1", 1);
+		addMemoryRadioButton("M2", 2);
+		addMemoryRadioButton("M3", 3);
+		r_buttons_memory_box.add(Box.createHorizontalGlue());
+		radioButtons_mem.setSelected(radioButtons_mem.getElements().nextElement().getModel(), true);
+		r_buttons_memory_box.add(Box.createHorizontalGlue()); 
 		//
 		Box contentBox = Box.createVerticalBox();
 		contentBox.add(hboxfigure);
@@ -199,7 +245,9 @@ public class MainFrame extends JFrame{
 		contentBox.add(hboxVariables);
 		contentBox.add(hboxResult);
 		contentBox.add(hboxButtons);
+		contentBox.add(memory_box);
 		contentBox.add(hboxmemory);
+		contentBox.add(r_buttons_memory_box);
 		contentBox.add(Box.createVerticalGlue());
 		////
 		getContentPane().add(contentBox, BorderLayout.CENTER);

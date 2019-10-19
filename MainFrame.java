@@ -28,6 +28,9 @@ public class MainFrame extends JFrame{
 	private JTextField textFieldX;  
 	private JTextField textFieldY; 
 	private JTextField textFieldZ; 
+	private ImageIcon icon1 = new ImageIcon("f1.png");
+	private ImageIcon icon2 = new ImageIcon("f2.png");
+	private JLabel figure;
 	private JTextField textFieldResult; 
 	private int formulaId = 1;
 	private double mem1;
@@ -39,7 +42,12 @@ public class MainFrame extends JFrame{
 		button.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ev){
 				MainFrame.this.formulaId = formulaId;
-				drawImage("f"+formulaId+".PNG");
+				if(formulaId == 1){
+					figure.setIcon(icon1);
+				}
+				else{
+					figure.setIcon(icon2);
+				}
 			}
 		});
 		radioButtons.add(button);   
@@ -177,15 +185,15 @@ public class MainFrame extends JFrame{
 		hboxmemory.add(MC);
 		hboxmemory.add(M);
 		//
-		/*ImageIcon icon = new ImageIcon(icon_name);
-		JLabel figure = new JLabel(icon);
+		//ImageIcon icon = new ImageIcon(icon_name);
+		figure = new JLabel(icon1);
 		Box hboxfigure = Box.createHorizontalBox();
 		hboxfigure.add(Box.createHorizontalGlue());
 		hboxfigure.add(figure);
-		hboxfigure.add(Box.createHorizontalGlue());*/
+		hboxfigure.add(Box.createHorizontalGlue());
 		//
 		Box contentBox = Box.createVerticalBox();
-		//contentBox.add(hboxfigure);
+		contentBox.add(hboxfigure);
 		contentBox.add(Box.createVerticalGlue());
 		contentBox.add(hboxFormulaType);
 		contentBox.add(hboxVariables);
